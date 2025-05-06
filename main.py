@@ -1,5 +1,6 @@
 import streamlit as st
 from typing import List, Dict, Tuple
+import plotly.express as px
 
 
 class Knapsack:
@@ -62,7 +63,7 @@ st.title("Otimizador de Produção com Budget Limitado")
 st.markdown("Otimize a produção de produtos com custo, lucro e limite de unidades usando programação dinâmica.")
 
 st.subheader("Defina seu orçamento")
-budget = st.number_input("Orçamento disponível", min_value=1, step=1, value=100)
+budget = st.number_input("Orçamento disponível", min_value=100, step=100, value=10000)
 
 st.subheader("Lista de Produtos")
 
@@ -92,9 +93,9 @@ if st.button("Adicionar produto"):
 
 if st.button("📂 Carregar exemplo"):
     st.session_state.products = [
-        {'name': 'Produto A', 'cost': 10, 'value': 60, 'max_units': 3},
-        {'name': 'Produto B', 'cost': 20, 'value': 100, 'max_units': 2},
-        {'name': 'Produto C', 'cost': 30, 'value': 120, 'max_units': 2}
+        {'name': 'Notebook', 'cost': 2500, 'value': 5000, 'max_units': 3},
+        {'name': 'Smartphone', 'cost': 1500, 'value': 3000, 'max_units': 2},
+        {'name': 'Tablet', 'cost': 1000, 'value': 2000, 'max_units': 2}
     ]
 
 if st.session_state.products:
@@ -112,7 +113,14 @@ if st.session_state.products:
 
         st.success("Produção ótima encontrada!")
         st.write("### Quantidade por produto")
-        st.table([{"Produto": k, "Quantidade": v} for k, v in result.items()])
+        
+        data = [
+            {"Produto": name, "Quantidade": qty}
+            for name, qty in result.items()
+        ]
+
+        fig = px.bar(data, x="Produto", y="Quantidade", title="Quantidade de produtos a serem produzidos")
+        st.plotly_chart(fig, use_container_width=True)
 
         # Métricas
         st.subheader("Métricas de desempenho")
